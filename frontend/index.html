@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Kubernetes Chatbot</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .chat-container {
+            width: 500px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #222;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #chat {
+            height: 400px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .user {
+            background: #dbeafe;
+            text-align: right;
+        }
+
+        .bot {
+            background: #eeeeee;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-left: 10px;
+            padding: 12px 20px;
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <div class="header">
+        <h2>🤖 Kubernetes Chatbot</h2>
+        <p>DevOps Learning Assistant</p>
+    </div>
+
+    <div id="chat">
+
+        <div class="message bot">
+            Hello! 👋 Ask me anything about Kubernetes.
+        </div>
+
+    </div>
+
+    <div class="input-area">
+
+        <input
+            id="message"
+            type="text"
+            placeholder="Ask something..."
+        />
+
+        <button onclick="sendMessage()">
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+async function sendMessage() {
+
+    const input = document.getElementById("message");
+
+    const message = input.value.trim();
+
+    if (!message) {
+        return;
+    }
+
+    const chat = document.getElementById("chat");
+
+    chat.innerHTML += `
+        <div class="message user">
+            ${message}
+        </div>
+    `;
+
+    input.value = "";
+
+    const response = await fetch("/api/chat", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            message: message
+        })
+
+    });
+
+    const data = await response.json();
+
+    chat.innerHTML += `
+        <div class="message bot">
+            ${data.reply}
+        </div>
+    `;
+
+    chat.scrollTop = chat.scrollHeight;
+
+}
+
+</script>
+
+</body>
+
+</html>
